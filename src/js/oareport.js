@@ -820,7 +820,7 @@ oareport = function(org) {
       } else if (formID == "has-unanswered-requests") {
         hasCustomExportIncludes = (response.data.hits.hits[0]._source.strategy.unanswered_requests.export_includes);
         strategyQuery           = (response.data.hits.hits[0]._source.strategy.unanswered_requests.query);
-      } else if (formID == "has-unanswered-requests") {
+      } else if (formID == "can-email-staff") {
         hasCustomExportIncludes = (response.data.hits.hits[0]._source.strategy.email_author_staff.export_includes);
         strategyQuery           = (response.data.hits.hits[0]._source.strategy.email_author_staff.query);
       }
