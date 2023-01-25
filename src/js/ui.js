@@ -103,21 +103,41 @@ function changeTabs(e) {
 let strategySelect = document.querySelector(".js-strategy-select"),
     canArchiveVORContent = document.querySelector("#can-archive-vor"),
     canArchiveAAMContent = document.querySelector("#can-archive-aam"),
-    hasAPCFollowupContent = document.querySelector("#has-apc-followup");
+    canEmailStaffContent = document.querySelector("#can-email-staff"),
+    hasAPCFollowupContent = document.querySelector("#has-apc-followup"),
+    hasUnansweredRequestsContent = document.querySelector("#has-unanswered-requests");
 
 strategySelect.addEventListener("change", function(e) {
   if (e.target.value === "canArchiveVOR") {
-      canArchiveVORContent.classList.remove("hidden");
-      canArchiveAAMContent.classList.add("hidden");
-      hasAPCFollowupContent.classList.add("hidden");
+    canArchiveVORContent.classList.remove("hidden");
+    canArchiveAAMContent.classList.add("hidden");
+    canEmailStaffContent.classList.add("hidden");
+    hasAPCFollowupContent.classList.add("hidden");
+    hasUnansweredRequestsContent.classList.add("hidden");
   } else if (e.target.value === "canArchiveAAM") {
-      canArchiveAAMContent.classList.remove("hidden");
-      canArchiveVORContent.classList.add("hidden");
-      hasAPCFollowupContent.classList.add("hidden");
+    canArchiveVORContent.classList.add("hidden");
+    canArchiveAAMContent.classList.remove("hidden");
+    canEmailStaffContent.classList.add("hidden");
+    hasAPCFollowupContent.classList.add("hidden");
+    hasUnansweredRequestsContent.classList.add("hidden");
+  } else if (e.target.value === "canEmailStaff") {
+    canArchiveVORContent.classList.add("hidden");
+    canArchiveAAMContent.classList.add("hidden");
+    canEmailStaffContent.classList.remove("hidden");
+    hasAPCFollowupContent.classList.add("hidden");
+    hasUnansweredRequestsContent.classList.add("hidden");
   } else if (e.target.value === "hasAPCFollowup") {
-      hasAPCFollowupContent.classList.remove("hidden");
-      canArchiveAAMContent.classList.add("hidden");
-      canArchiveVORContent.classList.add("hidden");
+    canArchiveVORContent.classList.add("hidden");
+    canArchiveAAMContent.classList.add("hidden");
+    canEmailStaffContent.classList.add("hidden");
+    hasAPCFollowupContent.classList.remove("hidden");
+    hasUnansweredRequestsContent.classList.add("hidden");
+  } else if (e.target.value === "hasUnansweredRequests") {
+    canArchiveVORContent.classList.add("hidden");
+    canArchiveAAMContent.classList.add("hidden");
+    canEmailStaffContent.classList.add("hidden");
+    hasAPCFollowupContent.classList.add("hidden");
+    hasUnansweredRequestsContent.classList.remove("hidden");
   }
 });
 
