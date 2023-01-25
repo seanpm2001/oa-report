@@ -115,7 +115,7 @@ oareport = function(org) {
   let report                       = base + "orgs?q=name:%22" + org + "%22",
       queryPrefix                  = queryBase + "q=" + dateRange,
       countQueryPrefix             = countQueryBase + "q=" + dateRange;
-
+  console.log("REPORT: " + report);
   // Check if user is authentified
   let orgKey = "";
   if (Object.keys(OAKEYS).length !== 0) {
@@ -375,7 +375,7 @@ oareport = function(org) {
                   journal = canArchiveVORList[i]._source.journal,
                   authorEmail = canArchiveVORList[i]._source.email;
 
-              var canArchiveVORMailto = response.data.hits.hits[0]._source.strategy.email_author_aam.mailto;
+              var canArchiveVORMailto = response.data.hits.hits[0]._source.strategy.email_author_vor.mailto;
               canArchiveVORMailto = canArchiveVORMailto.replaceAll("\'", "’");
               canArchiveVORMailto = canArchiveVORMailto.replaceAll("{title}", (title ? title : "[No title found]"));
               canArchiveVORMailto = canArchiveVORMailto.replaceAll("{doi}", (doi ? doi : "[No DOI found]"));
@@ -523,7 +523,7 @@ oareport = function(org) {
                     authorEmail = canEmailStaffList[i]._source.email;
 
                 // Get email draft/body for this article and replace with its metadata
-                var canEmailStaffMailto = response.data.hits.hits[0]._source.strategy.email_author_aam.mailto;
+                var canEmailStaffMailto = response.data.hits.hits[0]._source.strategy.email_author_staff.mailto;
                 canEmailStaffMailto = canEmailStaffMailto.replaceAll("\'", "’");
                 canEmailStaffMailto = canEmailStaffMailto.replaceAll("{title}", (title ? title : "[No article title found]"));
                 canEmailStaffMailto = canEmailStaffMailto.replaceAll("{doi}", (doi ? doi : "[No DOI found]"));
@@ -820,6 +820,9 @@ oareport = function(org) {
       } else if (formID == "has-unanswered-requests") {
         hasCustomExportIncludes = (response.data.hits.hits[0]._source.strategy.unanswered_requests.export_includes);
         strategyQuery           = (response.data.hits.hits[0]._source.strategy.unanswered_requests.query);
+      } else if (formID == "has-unanswered-requests") {
+        hasCustomExportIncludes = (response.data.hits.hits[0]._source.strategy.email_author_staff.export_includes);
+        strategyQuery           = (response.data.hits.hits[0]._source.strategy.email_author_staff.query);
       }
 
       Promise.all([hasCustomExportIncludes])
