@@ -266,6 +266,12 @@ permalink: "{{ org._source.objectID | slug }}/"
           }) }}
 
           {{ component("tab-item", {
+            id: "can-email-staff",
+            txt: "Deposit staff articles",
+            first: false
+          }) }}
+
+          {{ component("tab-item", {
             id: "has-apc-followup",
             txt: "Correct publisher errors",
             first: false
@@ -297,6 +303,17 @@ permalink: "{{ org._source.objectID | slug }}/"
       id: "can-archive-aam",
       heading: "Deposit accepted manuscripts",
       desc: "Send emails to authors to request they make their work free to read. In these cases, they can do that by making an <strong>author accepted manuscript (AAM)</strong> available in a repository.",
+      table_headings: "<th scope='col' class='py-3.5 pl-4 pr-3 text-left text-sm font-semibold w-10/12 sm:w-6/12'>Article</th>\
+                       <th scope='col' class='hidden px-3 py-3.5 text-left text-sm font-semibold w-4/12 sm:table-cell'>Corresponding author</th>",
+      draft_btn: true,
+      action_help_txt: true,
+      hidden: true
+    }) }}
+
+    {{ component("tab-contents", {
+      id: "can-email-staff",
+      heading: "Deposit staff articles",
+      desc: "These paywalled articles have authors who work at your organization. Make them free to read by emailing the corresponding author and asking them to deposit their article into a repository.",
       table_headings: "<th scope='col' class='py-3.5 pl-4 pr-3 text-left text-sm font-semibold w-10/12 sm:w-6/12'>Article</th>\
                        <th scope='col' class='hidden px-3 py-3.5 text-left text-sm font-semibold w-4/12 sm:table-cell'>Corresponding author</th>",
       draft_btn: true,

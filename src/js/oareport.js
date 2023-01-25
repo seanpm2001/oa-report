@@ -478,6 +478,89 @@ oareport = function(org) {
       ).catch(function (error) { console.log("displayStrategyAAM error: " + error); })
     };
 
+    /** Display Strategies: deposit staff papers  **/
+    displayStrategyStaff = function() {
+      var totalStaffActionsContents = document.querySelector("#total-can-email-staff"),
+          canEmailStaffTable        = document.querySelector("#table-can-email-staff"),
+          countStaffActionsContents = document.querySelector("#count-can-email-staff");
+
+      if (response.data.hits.hits[0]._source.strategy.email_author_staff.query) {
+        canEmailStaffQuery  = (countQueryPrefix + response.data.hits.hits[0]._source.strategy.email_author_staff.query);
+        canEmailStaffListQuery = (queryPrefix + response.data.hits.hits[0]._source.strategy.email_author_staff.query);
+        canEmailStaff  = axios.get(canEmailStaffQuery);
+        canEmailStaffList = axios.get(canEmailStaffListQuery);
+
+        Promise.all([canEmailStaff, canEmailStaffList])
+          .then(function (results) {
+            let canEmailStaff = results[0].data,
+                canEmailStaffList = results[1].data.hits.hits,
+                canEmailStaffLength = parseFloat(canEmailStaff);
+
+            // Show total number of actions in tab & above table
+            countStaffActionsContents.textContent = makeNumberReadable(canEmailStaffLength);
+
+            if (canEmailStaffLength > 100) {
+              canEmailStaffLength = 100;
+            }
+
+            totalStaffActionsContents.textContent = makeNumberReadable(canEmailStaffLength);
+
+            // Generate list of archivable AAMs if there are any
+            if (canEmailStaff === 0) {
+              totalStaffActionsContents.textContent = "No ";
+              canEmailStaffTable.innerHTML = "<tr><td class='py-4 pl-4 pr-3 text-sm text-center align-top break-words' colspan='3'>We couldn’t find any articles! <br>Try selecting another date range or come back later once new articles are ready.</td></tr>";
+            }
+            else if (canEmailStaff > 0 || canEmailStaff !== null) {
+              // Set up and get list of emails for archivable AAMs
+              var canEmailStaffTableRows = "";
+
+              for (var i = 0; i < canEmailStaffLength; i++) {
+                var title = canEmailStaffList[i]._source.title,
+                    author = canEmailStaffList[i]._source.author_email_name,
+                    doi   = canEmailStaffList[i]._source.DOI,
+                    pubDate = canEmailStaffList[i]._source.published_date,
+                    journal = canEmailStaffList[i]._source.journal,
+                    authorEmail = canEmailStaffList[i]._source.email;
+
+                // Get email draft/body for this article and replace with its metadata
+                var canEmailStaffMailto = response.data.hits.hits[0]._source.strategy.email_author_aam.mailto;
+                canEmailStaffMailto = canEmailStaffMailto.replaceAll("\'", "’");
+                canEmailStaffMailto = canEmailStaffMailto.replaceAll("{title}", (title ? title : "[No article title found]"));
+                canEmailStaffMailto = canEmailStaffMailto.replaceAll("{doi}", (doi ? doi : "[No DOI found]"));
+                canEmailStaffMailto = canEmailStaffMailto.replaceAll("{author_name}", (author ? author : "researcher"));
+
+                /*jshint multistr: true */
+                canEmailStaffTableRows += '<tr>\
+                  <td class="py-4 pl-4 pr-3 text-sm align-top break-words">\
+                    <div class="mb-1 text-neutral-500">' + (pubDate ? makeDateReadable(new Date(pubDate)) : "[No date found]") + '</div>\
+                    <div class="mb-1 font-medium text-neutral-900 hover:text-carnation-500">\
+                      <a href="https://doi.org/' + doi + '" target="_blank" rel="noopener" title="Open article">' + (title ? title : "[No article title found]") + '</a>\
+                    </div>\
+                    <div class="text-neutral-500">' + (journal ? journal : "[No journal name found]") + '</div>\
+                  </td>\
+                  <td class="hidden px-3 py-4 text-sm text-neutral-500 align-top break-words sm:table-cell">\
+                    <div class="mb-1 text-neutral-900">' + (author ? author : "[No author’s name found]") + '</div>\
+                    <div class="text-neutral-500">' + (authorEmail ? "Email available" : "No email") + '</div>\
+                  </td>\
+                  <td class="whitespace-nowrap py-4 pl-3 pr-4 text-center align-top text-sm font-medium">\
+                    <button class="inline-flex items-center p-2 border border-transparent bg-carnation-500 text-white rounded-full shadow-sm hover:bg-white hover:text-carnation-500 hover:border-carnation-500 transition duration-200 js-btn-can-email-staff" onclick="decryptEmail(\'' + authorEmail + '\', \'' + doi +  '\', \'' + encodeURI(canEmailStaffMailto) +'\');">\
+                      <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail inline-block h-4 duration-500"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>\
+                    </button>\
+                  </td>\
+                </tr>';
+              }
+              canEmailStaffTable.innerHTML = canEmailStaffTableRows;
+            }
+          }
+        ).catch(function (error) { console.log("displayStrategyStaff error: " + error); })
+      } else {
+        // hide tab and its content if this strategy doesn’t exist for this org
+        document.querySelectorAll('#item-can-email-staff, #can-email-staff').forEach(function(elems) {
+          elems.style.display = 'none';
+        });
+      }
+    };
+
     /** Display Strategies: follow up with uncompliant articles with paid APCs **/
     displayStrategyAPCFollowup = function() {
       var totalAPCActionsContents        = document.querySelector("#total-has-apc-followup"),
@@ -780,6 +863,7 @@ oareport = function(org) {
     displayInsights();
     displayStrategyVOR();
     displayStrategyAAM();
+    displayStrategyStaff();
     displayStrategyAPCFollowup();
     displayStrategyUnansweredRequests();
 
